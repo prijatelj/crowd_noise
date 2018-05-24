@@ -46,7 +46,7 @@ Libraries to use possibly:
         - Festvox
         - Flite
     + WaveNet (google's thing for tts in tensorflow)
-    + Deep-Voice
+    + Deep-Voice (https://arxiv.org/abs/1702.07825)
 
 Links of Use
 --

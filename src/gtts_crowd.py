@@ -1,4 +1,4 @@
-"""len
+"""
 create mp3 of crowd of voices by generating text of a language, then using text
 to speech api to make the mp3s that are then layered.
 
@@ -17,8 +17,8 @@ from pydub import AudioSegment
 
 def get_word_list(lang='en'):
     """ Loads word list for specified language. """
-    if lang.lower() == "en":
-        with open("data/english_words.txt", encoding='utf-8') as csvfile:
+    if lang.lower() == 'en':
+        with open('data/english_words.txt', encoding='utf-8') as csvfile:
             content = csv.reader(csvfile, delimiter=' ')
 
             word_list = []
@@ -29,8 +29,8 @@ def get_word_list(lang='en'):
 
             probs = np.asarray(probs, dtype=np.float32)
             probs = probs / np.sum(probs)
-    elif lang.lower() == "de":
-        with open("data/german_words.txt", encoding='utf-8') as csvfile:
+    elif lang.lower() == 'de':
+        with open('data/german_words.txt', encoding='utf-8') as csvfile:
             content = csv.reader(csvfile, delimiter=' ')
 
             word_list = []
@@ -41,8 +41,8 @@ def get_word_list(lang='en'):
 
             probs = np.asarray(probs, dtype=np.float32)
             probs = probs / np.sum(probs)
-    elif lang.lower() == "ja":
-        with open("data/japanese_words.txt", encoding='utf-8') as csvfile:
+    elif lang.lower() == 'ja':
+        with open('data/japanese_words.txt', encoding='utf-8') as csvfile:
             content = csv.reader(csvfile, delimiter=' ')
 
             word_list = []
@@ -56,17 +56,17 @@ def get_word_list(lang='en'):
 
     return word_list, probs
 
-def generate_speech(word_list, word_probs, str_len, gender=None, lang="en"):
+def generate_speech(word_list, word_probs, str_len, gender=None, lang='en'):
     utterance = ' '.join(np.random.choice(word_list, str_len, p=word_probs))
-    if lang == "de":
+    if lang == 'de':
         language = ['de']
-    if lang == "ja":
+    if lang == 'ja':
         language = ['ja']
     else:
         language = ['en-us', 'en-uk', 'en-au']
     return gTTS(utterance, lang=language[randint(0, len(language)-1)])
 
-def generate_random_tts(num_people, lang="en"):
+def generate_random_tts(num_people, lang='en'):
     """ Generates the files to be spoken in the crowd. """
     word_list, probs = get_word_list(lang=lang)
     return [generate_speech(word_list,
@@ -74,14 +74,14 @@ def generate_random_tts(num_people, lang="en"):
         int(np.random.normal(24, 4)),
         lang=lang) for x in range(0,num_people)]
 
-def save_tts(tts_list, output_dir, lang="en"):
+def save_tts(tts_list, output_dir, lang='en'):
     for i, tts in enumerate(tts_list):
-        tts.save(output_dir + "/" + lang + "/speaker_" + str(i) + ".mp3")
+        tts.save(output_dir + '/' + lang + '/speaker_' + str(i) + '.mp3')
 
 def load_mp3(mp3_dir):
     mp3s = []
-    for filename in [x for x in listdir(mp3_dir) if ".mp3" in x]:
-        mp3s.append(AudioSegment.from_mp3(mp3_dir + "/" + filename))
+    for filename in [x for x in listdir(mp3_dir) if '.mp3' in x]:
+        mp3s.append(AudioSegment.from_mp3(mp3_dir + '/' + filename))
 
     return mp3s
 
@@ -105,16 +105,16 @@ def create_crowd(mp3_list):
     return crowd
 
 def main():
-    lang = "ja"
-    speaker_dir = "results/speakers"
+    lang = 'ja'
+    speaker_dir = 'results/speakers'
     speaker_num = 30
 
     save_tts(generate_random_tts(speaker_num, lang), speaker_dir, lang=lang)
-    crowd_sound = create_crowd(load_mp3(speaker_dir + "/" + lang))
+    crowd_sound = create_crowd(load_mp3(speaker_dir + '/' + lang))
 
-    crowd_sound.export("results/crowds/" + lang + "/" + lang + "_" \
-        + str(speaker_num) + "_overlay.mp3",
-        format="mp3")
+    crowd_sound.export('results/crowds/' + lang + '/' + lang + '_' \
+        + str(speaker_num) + '_overlay.mp3',
+        format='mp3')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

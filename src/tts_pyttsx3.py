@@ -17,7 +17,7 @@ def simple_crowd():
     def other_speak(name, location, length):
         print('word', name, location, length)
         if location > 10:
-            engine.setProperty("voice", voices[8])
+            engine.setProperty('voice', voices[8])
 
     engine.connect('started-word', other_speak)
     engine.say('The quick brown fox jumped over the lazy dog.')
@@ -25,7 +25,7 @@ def simple_crowd():
 
 def add_say(name, location, length):
     if location > 10:
-        engine.say("Yo, I just added this phrase boyo!")
+        engine.say('Yo, I just added this phrase boyo!')
         engine.runAndWait()
 
 def onEnd(name, completed):
@@ -36,5 +36,5 @@ def main():
 
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

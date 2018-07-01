@@ -92,9 +92,11 @@ def espeak(text, output_path, name='temp', pitch=(82, 118), formant=None,
 
     #Initialize the directories if they aren't already
 
-    workingDirectory = os.path.realpath('')
-    
-    voicesDirectory = os.path.join(workingDirectory, 'espeak-data', 'voices')
+    workingDirectory = os.path.dirname(os.path.realpath(''))
+
+    dataDirectory = os.path.join(workingDirectory,'data')
+
+    voicesDirectory = os.path.join(dataDirectory, 'espeak-data', 'voices')
 
 
     #Create voice
@@ -105,7 +107,7 @@ def espeak(text, output_path, name='temp', pitch=(82, 118), formant=None,
 
     #Say using our new fancy custom voice.
 
-    say(text,output_path,name,workingDirectory)
+    say(text,output_path,name,dataDirectory)
 
     # no return
 
@@ -228,7 +230,7 @@ def makeVoice(voicesDirectory, name='temp', pitch=(82, 118), formant=None, echo=
 
     #no return
 
-def say(text, output_path, name, workingDirectory):
+def say(text, output_path, name, dataDirectory):
 
     """
 
@@ -243,7 +245,7 @@ def say(text, output_path, name, workingDirectory):
 
             name (String): Name of voice being used to speak text.
 
-            workingDirectory (Path as String): Path to the directory that contains the espeak-data.
+            dataDirectory (Path as String): Path to the directory that contains the espeak-data.
 
     @returns
 
@@ -258,32 +260,31 @@ def say(text, output_path, name, workingDirectory):
     #Build the command to run
 
     #Command Base
-    cmd = 'espeak '
+    cmd = ['espeak']
      
     #Set Voice Directory
-    cmd += '--path='+workingDirectory+' '
+    cmd = cmd + ['--path='+dataDirectory]
 
     #Set Voice
-    cmd += '-v '+name+' '
+
+    cmd = cmd  + ['-v'+name]
 
     #Set file saving
-    cmd += '-w '+output_path+'.wav '
+    cmd =  cmd + ['-w '+output_path+'.wav']
 
     #Set the text being said
-    cmd += '\"'+text+'\"'
+    cmd = cmd + ['\"'+text+'\"']
 
     #And now we run the command
-
-    print(cmd)
 
     subprocess.call(cmd)
 
     #no return
 
-def random_espeak(text, output_path, name = {'temp'}, pitch=((82, 118)), formant=None,
-    echo=None, tone=None, flutter=2, roughness=2, voicing=100,
-    consonants=(100,100), breath=0, breathw=None, speed=100, language=None,
-    gender=None, output_filetype='wav'):
+def random_espeak(text, output_path,  name = ('name1', 'name2', 'name3'),  pitch = ((60,100),(82,118),(120,160)), formant=(None,None,None),
+    echo=(None,None,None), tone=((600,170,1200,135,2000,110),(600,170,1200,135,2000,110),(600,170,1200,135,2000,110)), flutter=(1,2,3), roughness=(1,2,3), voicing=(100,100,100),
+    consonants=((100,100),(100,100),(100,100)), breath=(None,None,None), breathw=(None,None,None), speed=(75,100,125), language=('en','en','en'),
+    gender=('male','male','female')):
     """
     A wrapper of espeak python interface wrapper. This wrapper randomizes the
     parameter inputs given certain ranges and discrete items to select from.
@@ -299,28 +300,33 @@ def random_espeak(text, output_path, name = {'temp'}, pitch=((82, 118)), formant
         or to reasonable limits from testing that change the voice without
         making it sound too unnatrual.
     """
-    # TODO update default params of function. Currently match espeak() defaults.
 
-    # code example:
-    # name param should default to a set of default names in espeak
-    name = {'name1', 'name2', 'name3'} #this is notation for python set
-    pitch = ((0,100), (0,200)) # example of pitch default parameter, fake values
+    #Select the Index that we're gonna roll with
+    selectedIndex = random.randint(0,len(name))
+
+    print(selectedIndex)
 
     # can overwrite param vars with random select for readability.
-    pitch = (random.randint(pitch[0][0], pitch[0][1]),
-        random.randint(pitch[1][0], pitch[1][1]))
+    # pitch = (random.randint(pitch[0][0], pitch[0][1]),random.randint(pitch[1][0], pitch[1][1]),random.randint(pitch[2][0], pitch[2][1]))
+    # TODO: Maybe later if people want it? Wouldn't be hard... - Matt
 
     espeak(
         text,
         output_path,
-        random.choice(name),
-        pitch,
-        # fill in rest of espeak params similarly
-        output_filetype=output_filetype
+        name[selectedIndex],
+        pitch[selectedIndex],
+        formant[selectedIndex],
+        echo[selectedIndex],
+        tone[selectedIndex], 
+        flutter[selectedIndex],
+        roughness[selectedIndex],
+        voicing[selectedIndex],
+        consonants[selectedIndex],
+        breath[selectedIndex],
+        breathw[selectedIndex],
+        speed[selectedIndex],
+        language[selectedIndex],
+        gender[selectedIndex]
     )
 
     # no return
-if __name__ == '__main__':
-
-    #TODO Remove later on. Currently just being used for some unit testing
-    espeak('All hail glow cloud. All hail glow cloud. All hail glow cloud.', '/home/magic/crowdnoise/crowd_noise/results/test')

@@ -1,0 +1,10 @@
+name sample32
+language en
+gender male
+pitch 100 124
+tone 600 170 1200 135 2000 110
+flutter 2
+roughness 1
+voicing 99
+consonants 89 86
+speed 103

@@ -8,11 +8,12 @@ TODO markov chains for more realistic word sequences.
 """
 
 import csv
+import os
 from os import listdir
 from os.path import isfile
 from random import randint
 import numpy as np
-from gtts import gTTS
+#from gtts import gTTS
 from pydub import AudioSegment
 
 def get_word_list(lang='en'):

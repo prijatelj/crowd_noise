@@ -4,11 +4,13 @@ All NLG methods and an interface to select between them.
 :author: Derek S. Prijatelj
 """
 
+import os
 import csv
 import random
 import numpy as np
 import pandas as pd
 import markovify
+import sys
 
 def frequency(sentence_length, frequencies=None, lang='en', filepath=None):
     """
@@ -87,7 +89,7 @@ def markov_chain_ngram(max_length, n=5, num_sentences=1, lang='en'):
         sentences.append(sentence)
     return sentences
 
-def markov_chain_static_n(length, n, size, lang='en'):
+def markov_chain_static_n(max_length, n, num_sentences, lang='en'):
     assert max_length >= n
 
     # load ngram chains
@@ -120,12 +122,15 @@ def load_ngram_chain(n, lang):
         return None
 
     # TODO use pandas
-    #df = pd.read_table('../data/' + lang + '/ngrams_coca/w' + str(n) + '_.txt')
-
+    #df = pd.read_csv(
+    #    os.path.join('..', 'data', 'ngrams_coca', 'w'+str(n)+'_.txt'),
+    #    sep='\t',
+    #    columns=['freq'] + list(range(1,n+1))
+    #)
 
 
     #"""
-    with open('../data/' + lang + '/ngrams_coca/' + str(n) + 'gram_case_pos.txt',
+    with open('../data/ngrams_coca/' +'w'+str(n) + '_.txt',
             encoding='utf-8') as ngram_file:
         content = csv.reader(ngram_file, delimiter='\t')
 
@@ -151,15 +156,18 @@ def load_ngram_chain(n, lang):
     #"""
     return None
 
-def markov_chain_syntax(max_length, n, num_sentences=1, lang='en')
+def markov_chain_syntax(max_length, n, num_sentences=1, lang='en'):
     """
     Markov Chain based on syntax alone. Words of correct syntax are filled into
     the choosen syntax spots.
     """
     return
 
-def markov_chain_text(max_length, num_sentences=1, text=None, lang='en'):
+def markov_chain_text(max_length, text_path, num_sentences=1, lang='en'):
     # load ngrams (or be ready with them)
+    with open(text_path) as f:
+        text = f.read()
+
     text_model = markovify.Text(text)
 
     sentences = []
@@ -169,8 +177,12 @@ def markov_chain_text(max_length, num_sentences=1, text=None, lang='en'):
     return sentences
 
 def main():
-    sentences = markov_chain_static_n(8, 2, num_sentences=10)
-    print(sentences)
+    #sentences = markov_chain_static_n(8, 2, 10)
+    #print(sentences)
+    arg = sys.argv
+    max_length = int(arg[1])
+    sents = int(arg[2])
+    print(markov_chain_text(max_length, '../data/moby.txt', sents))
 
 if __name__ == '__main__':
     main()

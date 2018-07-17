@@ -85,6 +85,15 @@ def load_mp3(mp3_dir):
 
     return mp3s
 
+def load_wav(wav_dir):
+    wavs = []
+    for filename in [x for x in listdir(wav_dir) if '.wav' in x]:
+        wavs.append(AudioSegment.from_file(
+            os.path.join(wav_dir,filename),
+            format='wav')
+         )
+    return wavs
+
 def create_crowd(mp3_list):
     lengths = [len(x) for x in mp3_list]
 
@@ -103,6 +112,10 @@ def create_crowd(mp3_list):
     for i, mp3 in enumerate(mp3_list[1:]):
         crowd = crowd.append(mp3, min(len(mp3),len(crowd)))
     return crowd
+
+def crowd_compile(sound_dir, output_filepath):
+    crowd_sound = create_crowd(load_wav(sound_dir))
+    crowd_sound.export(output_filepath, format='wav')
 
 def main():
     lang = 'ja'
